@@ -19,7 +19,7 @@ public class ReplicacaoProcessoDAO {
             "SELECT * FROM TB_REPLICACAO_PROCESSO";
 
     private static final String SQL_SELECT_BY_ID =
-            "SELECT * FROM TB_REPPLICACAO_PROCESSO WHERE ID=?";
+            "SELECT * FROM TB_REPLICACAO_PROCESSO WHERE ID=?";
 
     private static final String SQL_INSERT =
             "INSERT INTO TB_REPLICACAO_PROCESSO (PROCESSO, DESCRICAO, HABILITADO) VALUES (?, ?, ?)";
@@ -61,8 +61,9 @@ public class ReplicacaoProcessoDAO {
 
     public TB_REPLICACAO_PROCESSO selectById(Long id) throws SQLException {
 
+        pstSelectById.setLong(1, id);
+
         try(ResultSet rs = pstSelectById.executeQuery()) {
-            pstSelectById.setLong(1, id);
             return rs.next() ? map(rs) : null;
         }
 
