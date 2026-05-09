@@ -17,21 +17,16 @@ public class ConsultaReplicacaoDirecaoDialog extends JDialog {
     private TB_REPLICACAO_DIRECAO selecionado;
 
     public ConsultaReplicacaoDirecaoDialog(JFrame parent, DirecaoDAO dao) throws SQLException {
-        super(parent, "Consulta de Tabelas");
-        setSize(700, 400);
+        super(parent, "Consulta - Direções", true);
+        setSize(900, 400);
         setLocationRelativeTo(parent);
-        setResizable(false);
         setLayout(null);
 
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
-        model.addColumn("DIREÇÃO_ORIGEM");
-        model.addColumn("DIREÇÃO_DESTINO");
-        model.addColumn("USUARIO_ORIGEM");
-        model.addColumn("USUARIO_DESTINO");
-        model.addColumn("SENHA_ORIGEM");
-        model.addColumn("SENHA_DESTINO");
         model.addColumn("PROCESSO_ID");
+        model.addColumn("ORIGEM");
+        model.addColumn("DESTINO");
         model.addColumn("HABILITADO");
 
         ArrayList<TB_REPLICACAO_DIRECAO> lista = dao.selectAll();
@@ -39,20 +34,16 @@ public class ConsultaReplicacaoDirecaoDialog extends JDialog {
         for (TB_REPLICACAO_DIRECAO p : lista) {
             model.addRow(new Object[]{
                     p.getId(),
+                    p.getProcesso_id(),
                     p.getDirecao_origem(),
                     p.getDirecao_destino(),
-                    p.getUsuario_origem(),
-                    p.getUsuario_destino(),
-                    p.getSenha_origem(),
-                    p.getSenha_destino(),
-                    p.getProcesso_id(),
                     p.getHabilitado()
             });
         }
 
         table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(10, 10, 680, 300);
+        scrollPane.setBounds(10, 10, 860, 300);
         add(scrollPane);
 
         btnSelecionar = new JButton("SELECIONAR");
@@ -75,16 +66,15 @@ public class ConsultaReplicacaoDirecaoDialog extends JDialog {
                 return;
             }
 
-            TB_REPLICACAO_DIRECAO p = new TB_REPLICACAO_DIRECAO();
-            p.setId(Long.parseLong(table.getValueAt(row, 0).toString()));
-            p.setDirecao_origem(table.getValueAt(row, 1).toString());
-            p.setDirecao_destino(table.getValueAt(row, 2).toString());
-            p.setUsuario_origem(table.getValueAt(row, 3).toString());
-            p.setUsuario_destino(table.getValueAt(row, 4).toString());
-            p.setSenha_origem(table.getValueAt(row, 5).toString());
-            p.setSenha_destino(table.getValueAt(row, 6).toString());
-            p.setProcesso_id(Long.parseLong(table.getValueAt(row, 7).toString()));
-            p.setHabilitado(Boolean.parseBoolean(table.getValueAt(row, 8).toString()));
+            Long id = Long.parseLong(table.getValueAt(row, 0).toString());
+            TB_REPLICACAO_DIRECAO p = null;
+
+            try{
+                p = dao.selectById(id);
+            }catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
             selecionado = p;
             dispose();
         });

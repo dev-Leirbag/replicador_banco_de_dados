@@ -17,10 +17,9 @@ public class ConsultaProcessoTabelaDialog extends JDialog {
     private TB_REPLICACAO_PROCESSO_TABELA selecionado;
 
     public ConsultaProcessoTabelaDialog(JFrame parent, ProcessoTabelaDAO dao) throws SQLException {
-        super(parent, "Consulta de Tabelas");
-        setSize(700, 400);
+        super(parent, "Consulta - Processo Tabela", true);
+        setSize(1000, 400);
         setLocationRelativeTo(parent);
-        setResizable(false);
         setLayout(null);
 
         DefaultTableModel model = new DefaultTableModel();
@@ -30,7 +29,6 @@ public class ConsultaProcessoTabelaDialog extends JDialog {
         model.addColumn("TABELA DESTINO");
         model.addColumn("ORDEM");
         model.addColumn("HABILITADO");
-        model.addColumn("WHERE");
 
         ArrayList<TB_REPLICACAO_PROCESSO_TABELA> lista = dao.selectAll();
 
@@ -40,13 +38,12 @@ public class ConsultaProcessoTabelaDialog extends JDialog {
                     p.getProcesso_id(),
                     p.getTabela_origem(),
                     p.getTabela_destino(),
-                    p.getOrdem(), p.isHabilitado(),
-                    p.getDs_where()});
+                    p.getOrdem(), p.isHabilitado()});
         }
 
         table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(10, 10, 680, 300);
+        scrollPane.setBounds(10, 10, 960, 300);
         add(scrollPane);
 
         btnSelecionar = new JButton("SELECIONAR");
@@ -69,14 +66,15 @@ public class ConsultaProcessoTabelaDialog extends JDialog {
                 return;
             }
 
-            TB_REPLICACAO_PROCESSO_TABELA p = new TB_REPLICACAO_PROCESSO_TABELA();
-            p.setId(Long.parseLong(table.getValueAt(row, 0).toString()));
-            p.setProcesso_id(Long.parseLong(table.getValueAt(row, 1).toString()));
-            p.setTabela_origem(table.getValueAt(row, 2).toString());
-            p.setTabela_destino(table.getValueAt(row, 3).toString());
-            p.setOrdem(Integer.parseInt(table.getValueAt(row, 4).toString()));
-            p.setHabilitado(Boolean.parseBoolean(table.getValueAt(row, 5).toString()));
-            p.setDs_where(table.getValueAt(row, 6).toString());
+            Long id = Long.parseLong(table.getValueAt(row, 0).toString());
+            TB_REPLICACAO_PROCESSO_TABELA p = null;
+
+            try {
+                p = dao.selectById(id);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
             selecionado = p;
             dispose();
         });
