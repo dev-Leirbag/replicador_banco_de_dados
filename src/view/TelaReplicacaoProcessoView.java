@@ -100,7 +100,7 @@ public class TelaReplicacaoProcessoView extends JFrame {
             txfDescricao.setText("");
             chkHabilitado.setSelected(true);
 
-            txfId.setEnabled(true);
+            txfId.setEnabled(false);
             txfProcesso.setEnabled(true);
             txfDescricao.setEnabled(true);
             chkHabilitado.setEnabled(true);
@@ -130,6 +130,7 @@ public class TelaReplicacaoProcessoView extends JFrame {
                     }
                     p.setId(Long.parseLong(txfId.getText()));
                     dao.update(p);
+                    JOptionPane.showMessageDialog(this, "Processo atualizado!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Clique em ADICIONAR ou BUSCAR antes de salvar.");
                     return;
@@ -140,6 +141,11 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 txfDescricao.setEnabled(false);
                 chkHabilitado.setEnabled(false);
                 btnSalvar.setEnabled(false);
+
+                txfId.setText("");
+                txfProcesso.setText("");
+                txfDescricao.setText("");
+
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Erro ao salvar: " + ex.getMessage());
@@ -185,10 +191,12 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 dlg.setVisible(true);
 
                 TB_REPLICACAO_PROCESSO selecionado = dlg.getSelecionado();
-                if (selecionado != null) return;
+                if (selecionado == null) return;
 
                 modoTelaAtual = modoTela.UPDATE;
-                txfId.setText(selecionado.getId().toString());
+
+                txfId.setText(String.valueOf(selecionado.getId()));
+                txfId.setEnabled(false);
                 txfProcesso.setText(selecionado.getProcesso());
                 txfDescricao.setText(selecionado.getDescricao());
                 chkHabilitado.setSelected(selecionado.getHabilitado());
@@ -203,9 +211,6 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Erro ao buscar: " + ex.getMessage());
             }
-
-
-
         });
 
     }
