@@ -17,7 +17,7 @@ public class ConsultaProcessoDialog extends JDialog{
     private TB_REPLICACAO_PROCESSO selecionado;
 
     public ConsultaProcessoDialog(JFrame parent, ReplicacaoProcessoDAO dao) throws SQLException {
-        super(parent, "Consulta de Processos");
+        super(parent, "Consulta de Processos", true);
         setSize(700, 400);
         setLocationRelativeTo(parent);
         setResizable(false);
@@ -74,7 +74,11 @@ public class ConsultaProcessoDialog extends JDialog{
            @Override
            public void mouseClicked(java.awt.event.MouseEvent evt) {
                if (evt.getClickCount() == 2) {
-                   btnSelecionar.doClick();
+                   int row = table.rowAtPoint(evt.getPoint());
+                   if (row >= 0) {
+                       table.setRowSelectionInterval(row, row);
+                       btnSelecionar.doClick();
+                   }
                }
            }
         });

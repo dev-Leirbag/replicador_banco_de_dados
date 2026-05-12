@@ -16,7 +16,7 @@ public class ProcessoTabelaDAO {
             "SELECT * FROM TB_REPLICACAO_PROCESSO_TABELA";
 
     private static final String SQL_SELECT_BY_PROCESSO_HABILITADO =
-            "SELECT * FROM TB_REPLICACAO_PROCESSO_TABELA WHERE PROCESSO_ID ? AND HABILITADO = TRUE ORDER BY ORDER";
+            "SELECT * FROM TB_REPLICACAO_PROCESSO_TABELA WHERE PROCESSO_ID = ? AND HABILITADO = TRUE ORDER BY ORDEM";
 
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM TB_REPLICACAO_PROCESSO_TABELA WHERE ID=?";
@@ -27,7 +27,7 @@ public class ProcessoTabelaDAO {
                     " VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_UPDATE =
-            "UPDATE INTO TB_REPLICACAO_PROCESSO_TABELA SET " +
+            "UPDATE TB_REPLICACAO_PROCESSO_TABELA SET " +
                     "PROCESSO_ID = ?, TABELA_ORIGEM = ?, TABELA_DESTINO = ?," +
                     "ORDEM = ?, HABILITADO = ?, DS_WHERE = ? WHERE ID=?";
 
@@ -65,9 +65,8 @@ public class ProcessoTabelaDAO {
 
     public ArrayList<TB_REPLICACAO_PROCESSO_TABELA> selectByProcessoHabilitado(Long processoId) throws SQLException {
         ArrayList<TB_REPLICACAO_PROCESSO_TABELA> lista = new ArrayList<>();
-
+        pstSelectByProcessoHabilitado.setLong(1, processoId);
         try(ResultSet rs = pstSelectByProcessoHabilitado.executeQuery()) {
-            pstSelectByProcessoHabilitado.setLong(1, processoId);
             while (rs.next()) {
                 lista.add(map(rs));
             }
@@ -76,9 +75,8 @@ public class ProcessoTabelaDAO {
     }
 
     public TB_REPLICACAO_PROCESSO_TABELA selectById(Long id) throws SQLException {
-
+        pstSelectById.setLong(1, id);
         try (ResultSet rs = pstSelectById.executeQuery()) {
-            pstSelectById.setLong(1, id);
             return rs.next() ? map(rs) : null;
         }
     }
@@ -100,6 +98,7 @@ public class ProcessoTabelaDAO {
         pstUpdate.setInt(4, tb.getOrdem());
         pstUpdate.setBoolean(5, tb.isHabilitado());
         pstUpdate.setString(6, tb.getDs_where());
+        pstUpdate.setLong(7, tb.getId());
         pstUpdate.executeUpdate();
     }
 

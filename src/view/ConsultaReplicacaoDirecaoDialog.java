@@ -66,24 +66,28 @@ public class ConsultaReplicacaoDirecaoDialog extends JDialog {
                 return;
             }
 
-            Long id = Long.parseLong(table.getValueAt(row, 0).toString());
-            TB_REPLICACAO_DIRECAO p = null;
-
-            try{
-                p = dao.selectById(id);
-            }catch (SQLException ex) {
-                throw new RuntimeException(ex);
+            try {
+                Long id = Long.parseLong(table.getValueAt(row, 0).toString());
+                TB_REPLICACAO_DIRECAO p = dao.selectById(id);
+                selecionado = p;
+                dispose();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Erro ao carregar registro: " + ex.getMessage());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "ID inválido");
             }
-
-            selecionado = p;
-            dispose();
         });
 
         table.addMouseListener(new java.awt.event.MouseAdapter(){
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
-                    btnSelecionar.doClick();
+                    int row = table.rowAtPoint(evt.getPoint());
+                    if (row >= 0) {
+                        table.setRowSelectionInterval(row, row);
+                        btnSelecionar.doClick();
+                    }
                 }
             }
         });

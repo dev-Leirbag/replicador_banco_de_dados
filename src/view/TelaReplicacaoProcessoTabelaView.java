@@ -133,7 +133,7 @@ public class TelaReplicacaoProcessoTabelaView extends JFrame {
         btnSalvar.setEnabled(false);
         btnExcluir.setEnabled(false);
 
-        btnBuscar.addActionListener(e -> {
+        btnAdicionar.addActionListener(e -> {
             modoTelaAtual = modoTela.INSERT;
 
             txfId.setText("");
@@ -308,6 +308,8 @@ public class TelaReplicacaoProcessoTabelaView extends JFrame {
                txtWhere.setEnabled(true);
                btnSalvar.setEnabled(true);
                btnExcluir.setEnabled(true);
+
+
 
            }catch (Exception ex){
                ex.printStackTrace();
