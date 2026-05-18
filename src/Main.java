@@ -1,3 +1,4 @@
+import service.ReplicacaoExecutar;
 import view.TelaReplicacaoDirecaoView;
 import view.TelaReplicacaoProcessoTabelaView;
 import view.TelaReplicacaoProcessoView;
@@ -26,7 +27,23 @@ public class Main extends JFrame {
         JMenu menuSistema = new JMenu("Sistema");
 
         JMenuItem itemExecutar = new JMenuItem("Executar Replicação");
-        itemExecutar.addActionListener(e -> {});
+        itemExecutar.addActionListener(e -> {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(!Thread.currentThread().isInterrupted()){
+                        new ReplicacaoExecutar(conn);
+                        try {
+                            Thread.sleep(60000);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+            }).start();
+
+        });
         menuSistema.add(itemExecutar);
 
         JMenuItem itemSair = new JMenuItem("Sair");
